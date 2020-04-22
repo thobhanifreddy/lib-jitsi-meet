@@ -236,7 +236,10 @@ export default function JitsiConference(options) {
     this._conferenceJoinAnalyticsEventSent = false;
 
     if (browser.supportsInsertableStreams()) {
-        this._e2eeCtx = new E2EEContext({ salt: this.options.name });
+        this._e2eeCtx = new E2EEContext({
+            myUserId: this.myUserId(),
+            salt: this.options.name
+        });
     }
 }
 
@@ -3366,7 +3369,7 @@ JitsiConference.prototype._setupReceiverE2EEForTrack = function(track) {
         const receiver = pc.findReceiverForTrack(track.track);
 
         if (receiver) {
-            this._e2eeCtx.handleReceiver(receiver, track.getType());
+            this._e2eeCtx.handleReceiver(receiver, track.getType(), track.id());
         } else {
             logger.warn(`Could not handle E2EE for remote ${track.getType()} track: receiver not found`);
         }
