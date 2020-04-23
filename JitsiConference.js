@@ -3369,7 +3369,7 @@ JitsiConference.prototype._setupReceiverE2EEForTrack = function(track) {
         const receiver = pc.findReceiverForTrack(track.track);
 
         if (receiver) {
-            this._e2eeCtx.handleReceiver(receiver, track.getType(), track.id());
+            this._e2eeCtx.handleReceiver(receiver, track.getType(), track.getParticipantId());
         } else {
             logger.warn(`Could not handle E2EE for remote ${track.getType()} track: receiver not found`);
         }
