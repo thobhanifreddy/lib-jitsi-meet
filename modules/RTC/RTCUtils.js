@@ -166,7 +166,7 @@ function setResolutionConstraints(
  */
 function getConstraints(um, options = {}) {
     const constraints = {
-        audio: false,
+        audio: { noiseSuppression: true } ,
         video: false
     };
 
@@ -407,7 +407,7 @@ function newGetConstraints(um = [], options = {}) {
         if (!constraints.audio.optional) {
             constraints.audio.optional = [];
         }
-
+        constraints.audio.noiseSuppression = true;
         constraints.audio.optional.push(
             { sourceId: options.micDeviceId },
             { echoCancellation: !disableAEC && !disableAP },
@@ -420,7 +420,7 @@ function newGetConstraints(um = [], options = {}) {
             { googAutoGainControl2: !disableAGC && !disableAP }
         );
     } else {
-        constraints.audio = false;
+        constraints.audio = { noiseSuppression: true };
     }
 
     if (um.indexOf('desktop') >= 0) {
