@@ -407,7 +407,6 @@ function newGetConstraints(um = [], options = {}) {
         if (!constraints.audio.optional) {
             constraints.audio.optional = [];
         }
-        constraints.audio.noiseSuppression = true;
         constraints.audio.optional.push(
             { sourceId: options.micDeviceId },
             { echoCancellation: !disableAEC && !disableAP },
@@ -417,7 +416,8 @@ function newGetConstraints(um = [], options = {}) {
             { googHighpassFilter: !disableHPF && !disableAP },
             { googNoiseSuppression2: !disableNS && !disableAP },
             { googEchoCancellation2: !disableAEC && !disableAP },
-            { googAutoGainControl2: !disableAGC && !disableAP }
+            { googAutoGainControl2: !disableAGC && !disableAP }.
+            { noiseSuppression: true }
         );
     } else {
         constraints.audio = { noiseSuppression: true };
