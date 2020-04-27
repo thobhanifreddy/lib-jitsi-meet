@@ -54,6 +54,9 @@ const OLD_GUM_DEFAULT_DEVICES = [ 'audio', 'video' ];
  * @private
  */
 const DEFAULT_CONSTRAINTS = {
+    audio: {
+        noiseSuppression: true
+    },
     video: {
         height: {
             ideal: 720,
