@@ -54,9 +54,6 @@ const OLD_GUM_DEFAULT_DEVICES = [ 'audio', 'video' ];
  * @private
  */
 const DEFAULT_CONSTRAINTS = {
-    audio: {
-        noiseSuppression: true
-    },
     video: {
         height: {
             ideal: 720,
@@ -679,9 +676,11 @@ function handleLocalStream(streams, resolution) {
         });
     }
     if (audioStream) {
+        const track = audioStream.getAudioTracks()[0];
+          track.applyConstraints({noiseSuppression: true})
         res.push({
             stream: audioStream,
-            track: audioStream.getAudioTracks()[0],
+            track: track,
             mediaType: MediaType.AUDIO,
             videoType: null
         });
