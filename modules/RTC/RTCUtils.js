@@ -990,7 +990,7 @@ class RTCUtils extends Listenable {
                 
                 logger.log("filtered stream ->", mediaStreamSource);
                 updateGrantedPermissions(um, mediaStreamSource);
-                resolve(stream);
+                resolve(mediaStreamSource);
             })
             .catch(error => {
                 logger.warn('Failed to get access to local media. '
