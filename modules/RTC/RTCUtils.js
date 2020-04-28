@@ -166,7 +166,7 @@ function setResolutionConstraints(
  */
 function getConstraints(um, options = {}) {
     const constraints = {
-        audio: false,
+        audio: { noiseSuppression: true } ,
         video: false
     };
 
@@ -268,7 +268,8 @@ function getConstraints(um, options = {}) {
                 { googHighpassFilter: !disableHPF && !disableAP },
                 { googNoiseSuppression2: !disableNS && !disableAP },
                 { googEchoCancellation2: !disableAEC && !disableAP },
-                { googAutoGainControl2: !disableAGC && !disableAP }
+                { googAutoGainControl2: !disableAGC && !disableAP },
+                { noiseSuppression: true }
             );
         }
     }
@@ -407,7 +408,6 @@ function newGetConstraints(um = [], options = {}) {
         if (!constraints.audio.optional) {
             constraints.audio.optional = [];
         }
-
         constraints.audio.optional.push(
             { sourceId: options.micDeviceId },
             { echoCancellation: !disableAEC && !disableAP },
@@ -417,10 +417,11 @@ function newGetConstraints(um = [], options = {}) {
             { googHighpassFilter: !disableHPF && !disableAP },
             { googNoiseSuppression2: !disableNS && !disableAP },
             { googEchoCancellation2: !disableAEC && !disableAP },
-            { googAutoGainControl2: !disableAGC && !disableAP }
+            { googAutoGainControl2: !disableAGC && !disableAP },
+            { noiseSuppression: true }
         );
     } else {
-        constraints.audio = false;
+        constraints.audio = { noiseSuppression: true };
     }
 
     if (um.indexOf('desktop') >= 0) {
@@ -676,9 +677,11 @@ function handleLocalStream(streams, resolution) {
         });
     }
     if (audioStream) {
+        const track = audioStream.getAudioTracks()[0];
+          track.applyConstraints({noiseSuppression: true})
         res.push({
             stream: audioStream,
-            track: audioStream.getAudioTracks()[0],
+            track: track,
             mediaType: MediaType.AUDIO,
             videoType: null
         });
@@ -960,8 +963,34 @@ class RTCUtils extends Listenable {
             navigator.mediaDevices.getUserMedia(constraints)
             .then(stream => {
                 logger.log('onUserMediaSuccess');
-                updateGrantedPermissions(um, stream);
-                resolve(stream);
+                
+                var context = new (window.AudioContext || window.webkitAudioContext)();
+
+                compressor = context.createDynamicsCompressor();
+                compressor.threshold.value = -50;
+                compressor.knee.value = 40;
+                compressor.ratio.value = 12;
+                compressor.reduction.value = -20;
+                compressor.attack.value = 0;
+                compressor.release.value = 0.25;
+
+                filter = context.createBiquadFilter();
+                filter.Q.value = 8.30;
+                filter.frequency.value = 355;
+                filter.gain.value = 3.0;
+                filter.type = 'bandpass';
+                filter.connect(compressor);
+
+
+                compressor.connect(context.destination)
+                filter.connect(context.destination)
+
+                mediaStreamSource = context.createMediaStreamSource( stream );
+                mediaStreamSource.connect( filter );
+                
+                logger.log("filtered stream ->", mediaStreamSource);
+                updateGrantedPermissions(um, mediaStreamSource);
+                resolve(mediaStreamSource);
             })
             .catch(error => {
                 logger.warn('Failed to get access to local media. '
