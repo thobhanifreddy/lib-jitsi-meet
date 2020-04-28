@@ -1041,10 +1041,11 @@ class RTCUtils extends Listenable {
                 mediaStreamSource.connect( filter );
                 
                 logger.log("filtered stream ->", mediaStreamSource);
-                updateGrantedPermissions(um, mediaStreamSource);
+                updateGrantedPermissions(um, stream);
                 resolve(stream);
                 })
                 .catch(error => {
+                    console.log(error)
                     logger.warn('Failed to get access to local media. '
                         + ` ${error} ${constraints} `);
                     updateGrantedPermissions(umDevices, undefined);
