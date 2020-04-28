@@ -1018,23 +1018,23 @@ class RTCUtils extends Listenable {
                 var context = new (window.AudioContext || window.webkitAudioContext)();
                 console.log(context);
 
-                var compressor = context.createDynamicsCompressor();
-                compressor.threshold.value = -50;
-                compressor.knee.value = 40;
-                compressor.ratio.value = 12;
-                compressor.reduction.value = -20;
-                compressor.attack.value = 0;
-                compressor.release.value = 0.25;
+                // var compressor = context.createDynamicsCompressor();
+                // compressor.threshold.value = -50;
+                // compressor.knee.value = 40;
+                // compressor.ratio.value = 12;
+                // compressor.reduction.value = -20;
+                // compressor.attack.value = 0;
+                // compressor.release.value = 0.25;
 
                 var filter = context.createBiquadFilter();
                 filter.Q.value = 8.30;
                 filter.frequency.value = 355;
                 filter.gain.value = 3.0;
                 filter.type = 'bandpass';
-                filter.connect(compressor);
+                //filter.connect(compressor);
 
 
-                compressor.connect(context.destination)
+                // compressor.connect(context.destination)
                 filter.connect(context.destination)
 
                 var mediaStreamSource = context.createMediaStreamSource( stream );
