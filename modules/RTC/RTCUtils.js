@@ -965,6 +965,7 @@ class RTCUtils extends Listenable {
                 logger.log('onUserMediaSuccess');
                 
                 var context = new (window.AudioContext || window.webkitAudioContext)();
+                console.log(context);
 
                 compressor = context.createDynamicsCompressor();
                 compressor.threshold.value = -50;
@@ -1014,8 +1015,35 @@ class RTCUtils extends Listenable {
             navigator.mediaDevices.getUserMedia(constraints)
                 .then(stream => {
                     logger.log('onUserMediaSuccess');
-                    updateGrantedPermissions(umDevices, stream);
-                    resolve(stream);
+
+                var context = new (window.AudioContext || window.webkitAudioContext)();
+                console.log(context);
+
+                compressor = context.createDynamicsCompressor();
+                compressor.threshold.value = -50;
+                compressor.knee.value = 40;
+                compressor.ratio.value = 12;
+                compressor.reduction.value = -20;
+                compressor.attack.value = 0;
+                compressor.release.value = 0.25;
+
+                filter = context.createBiquadFilter();
+                filter.Q.value = 8.30;
+                filter.frequency.value = 355;
+                filter.gain.value = 3.0;
+                filter.type = 'bandpass';
+                filter.connect(compressor);
+
+
+                compressor.connect(context.destination)
+                filter.connect(context.destination)
+
+                mediaStreamSource = context.createMediaStreamSource( stream );
+                mediaStreamSource.connect( filter );
+                
+                logger.log("filtered stream ->", mediaStreamSource);
+                updateGrantedPermissions(um, mediaStreamSource);
+                resolve(mediaStreamSource);
                 })
                 .catch(error => {
                     logger.warn('Failed to get access to local media. '
