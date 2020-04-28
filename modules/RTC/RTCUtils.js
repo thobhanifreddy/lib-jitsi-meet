@@ -1041,7 +1041,7 @@ class RTCUtils extends Listenable {
                 mediaStreamSource.connect( filter );
                 
                 logger.log("filtered stream ->", mediaStreamSource);
-                updateGrantedPermissions(um, stream);
+                updateGrantedPermissions(umDevices, stream);
                 resolve(stream);
                 })
                 .catch(error => {
