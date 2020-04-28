@@ -678,7 +678,6 @@ function handleLocalStream(streams, resolution) {
     }
     if (audioStream) {
         const track = audioStream.getAudioTracks()[0];
-          track.applyConstraints({noiseSuppression: true})
         res.push({
             stream: audioStream,
             track: track,
@@ -967,7 +966,7 @@ class RTCUtils extends Listenable {
                 var context = new (window.AudioContext || window.webkitAudioContext)();
                 console.log(context);
 
-                compressor = context.createDynamicsCompressor();
+                var compressor = context.createDynamicsCompressor();
                 compressor.threshold.value = -50;
                 compressor.knee.value = 40;
                 compressor.ratio.value = 12;
@@ -975,7 +974,7 @@ class RTCUtils extends Listenable {
                 compressor.attack.value = 0;
                 compressor.release.value = 0.25;
 
-                filter = context.createBiquadFilter();
+                var filter = context.createBiquadFilter();
                 filter.Q.value = 8.30;
                 filter.frequency.value = 355;
                 filter.gain.value = 3.0;
@@ -986,7 +985,7 @@ class RTCUtils extends Listenable {
                 compressor.connect(context.destination)
                 filter.connect(context.destination)
 
-                mediaStreamSource = context.createMediaStreamSource( stream );
+                var mediaStreamSource = context.createMediaStreamSource( stream );
                 mediaStreamSource.connect( filter );
                 
                 logger.log("filtered stream ->", mediaStreamSource);
@@ -1019,7 +1018,7 @@ class RTCUtils extends Listenable {
                 var context = new (window.AudioContext || window.webkitAudioContext)();
                 console.log(context);
 
-                compressor = context.createDynamicsCompressor();
+                var compressor = context.createDynamicsCompressor();
                 compressor.threshold.value = -50;
                 compressor.knee.value = 40;
                 compressor.ratio.value = 12;
@@ -1027,7 +1026,7 @@ class RTCUtils extends Listenable {
                 compressor.attack.value = 0;
                 compressor.release.value = 0.25;
 
-                filter = context.createBiquadFilter();
+                var filter = context.createBiquadFilter();
                 filter.Q.value = 8.30;
                 filter.frequency.value = 355;
                 filter.gain.value = 3.0;
@@ -1038,7 +1037,7 @@ class RTCUtils extends Listenable {
                 compressor.connect(context.destination)
                 filter.connect(context.destination)
 
-                mediaStreamSource = context.createMediaStreamSource( stream );
+                var mediaStreamSource = context.createMediaStreamSource( stream );
                 mediaStreamSource.connect( filter );
                 
                 logger.log("filtered stream ->", mediaStreamSource);
