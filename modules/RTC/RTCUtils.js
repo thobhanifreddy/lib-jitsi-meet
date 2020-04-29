@@ -1014,6 +1014,8 @@ class RTCUtils extends Listenable {
             navigator.mediaDevices.getUserMedia(constraints)
                 .then(stream => {
                     logger.log('onUserMediaSuccess');
+                    // updateGrantedPermissions(umDevices, stream);
+                    // resolve(stream);
 
                 var context = new (window.AudioContext || window.webkitAudioContext)();
                 console.log(context);
@@ -1036,10 +1038,14 @@ class RTCUtils extends Listenable {
 
                 // compressor.connect(context.destination)
                 var destination = context.createMediaStreamDestination();
-                filter.connect(destination)
+                
 
                 var mediaStreamSource = context.createMediaStreamSource( stream );
                 mediaStreamSource.connect( filter );
+                mediaStreamSource.connect(destination);
+                if (stream && stream.getVideoTracks().length > 0) {
+                    destination.stream.addTrack(stream.getVideoTracks()[0])
+                }
                 
                 logger.log("filtered stream ->", mediaStreamSource);
                 updateGrantedPermissions(umDevices, destination.stream);
