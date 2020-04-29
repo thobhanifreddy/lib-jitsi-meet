@@ -1035,14 +1035,15 @@ class RTCUtils extends Listenable {
 
 
                 // compressor.connect(context.destination)
-                filter.connect(context.destination)
+                var destination = context.createMediaStreamDestination();
+                filter.connect(destination)
 
                 var mediaStreamSource = context.createMediaStreamSource( stream );
                 mediaStreamSource.connect( filter );
                 
                 logger.log("filtered stream ->", mediaStreamSource);
-                updateGrantedPermissions(umDevices, stream);
-                resolve(stream);
+                updateGrantedPermissions(umDevices, destination.stream);
+                resolve(destination.stream);
                 })
                 .catch(error => {
                     console.log(error)
